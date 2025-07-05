@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Todo.css';
+import deleteIcon from '../assets/delete.png';
+
 
 function Todo() {
     const [formData, setFormData] = useState({
@@ -174,7 +176,7 @@ function Todo() {
                                                 style={{
                                                     marginLeft: '10px',
                                                     padding: '5px 10px',
-                                                    backgroundColor: 'red',
+                                                    backgroundColor: '#ff758f',
                                                     color: 'white',
                                                     border: 'none',
                                                     borderRadius: '33px',
@@ -182,6 +184,8 @@ function Todo() {
                                                 }}
                                             >
                                                 Delete
+                                                <img id='icon' src={deleteIcon}
+                                                    alt="" />
                                             </button>
                                         </div>
                                     </strong>
@@ -193,7 +197,7 @@ function Todo() {
                     <p>No todos available.</p>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
 
