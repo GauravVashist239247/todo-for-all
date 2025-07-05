@@ -1,0 +1,99 @@
+#but{
+    height: 100px;
+    position: relative;
+    /* top: -100px; */
+    /* left: 400px; */
+    width: 150px;
+
+}
+
+#name{
+    font-size: 40px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#but-div{
+    display: flex;
+    align-items: center ;
+    justify-content: center;
+}
+
+
+/* Todo.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input, button {
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background: #f9f9f9;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#task p {
+  margin: 5px 0;
+}
+
+#but {
+  display: block;
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* ✅ Mobile responsiveness */
+@media (max-width: 600px) {
+  div {
+    padding: 10px !important;
+  }
+
+  input, button {
+    font-size: 14px;
+  }
+
+  li {
+    font-size: 14px;
+  }
+
+  #but {
+    font-size: 14px;
+    padding: 8px;
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './Todo.css'
 
 function Todo() {
     const [formData, setFormData] = useState({
@@ -50,6 +51,29 @@ function Todo() {
         fetchTodos();
     }, []);
 
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`https://ecom-41u7.onrender.com/todo/deletetodo/${id}`, {
+                method: 'DELETE',
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert('Delete failed: ' + (result.message || response.statusText));
+                return;
+            }
+
+            alert('Todo deleted successfully!');
+            fetchTodos();
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Something went wrong while deleting.');
+        }
+    };
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -86,6 +110,15 @@ function Todo() {
             <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
                 <input
                     type="text"
+                    name="name"
+                    placeholder="Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                />
+                <input
+                    type="text"
                     name="task"
                     placeholder="Todo Task"
                     value={formData.task}
@@ -115,7 +148,32 @@ function Todo() {
                     <ul>
                         {data.map((todo, index) => (
                             <li key={todo?._id || index}>
-                                <strong>{todo?.task || 'Untitled'}</strong> — {todo?.duedate || 'No date'}
+                                <strong>Name : {todo.name}
+
+                                </strong>
+                                <strong id='task'>
+                                    <p>
+                                        Task:-
+                                        {todo?.task || 'Untitled'}</p>
+
+                                    {todo?.duedate || 'No date'}
+
+                                    <div id='but-div'>
+                                        <button id='but'
+                                            onClick={() => handleDelete(todo._id)}
+                                            style={{
+                                                marginLeft: '10px',
+                                                padding: '5px 10px',
+                                                backgroundColor: 'red',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '33px',
+                                                cursor: 'pointer'
+                                            }}
+                                        >Delete </button>
+                                    </div>
+                                </strong>
+
                             </li>
                         ))}
                     </ul>
