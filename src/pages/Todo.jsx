@@ -47,7 +47,7 @@ function Todo() {
     useEffect(() => {
         fetchTodos();
         const interval = setInterval(() => {
-            console.log(fetchTodos());
+
         }, 1000);
 
         return () => clearInterval(interval);
