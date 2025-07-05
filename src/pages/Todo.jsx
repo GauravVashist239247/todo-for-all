@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import './Todo.css'
+import './Todo.css';
 
 function Todo() {
     const [formData, setFormData] = useState({
+        name: '',
         task: '',
         duedate: ''
     });
@@ -10,7 +11,6 @@ function Todo() {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
 
-    // Handle input changes
     const handleChange = (e) => {
         setFormData(prev => ({
             ...prev,
@@ -18,7 +18,6 @@ function Todo() {
         }));
     };
 
-    // Fetch todos from backend
     const fetchTodos = () => {
         fetch("https://ecom-41u7.onrender.com/todo/todos")
             .then(response => {
@@ -28,8 +27,6 @@ function Todo() {
                 return response.json();
             })
             .then(result => {
-                console.log("Fetched result:", result);
-
                 if (Array.isArray(result)) {
                     setData(result);
                 } else if (result && Array.isArray(result.data)) {
@@ -46,7 +43,6 @@ function Todo() {
             });
     };
 
-    // Load todos on component mount
     useEffect(() => {
         fetchTodos();
     }, []);
@@ -74,7 +70,7 @@ function Todo() {
             alert('Something went wrong while deleting.');
         }
     };
-    // Handle form submission
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -95,8 +91,8 @@ function Todo() {
             }
 
             alert('Todo added successfully!');
-            setFormData({ task: '', duedate: '' });
-            fetchTodos(); // Refresh the list
+            setFormData({ name: '', task: '', duedate: '' });
+            fetchTodos();
         } catch (error) {
             console.error('Error:', error);
             alert('Something went wrong.');
@@ -146,44 +142,49 @@ function Todo() {
 
                 {Array.isArray(data) && data.length > 0 ? (
                     <ul>
-                        {data.map((todo, index) => (
-                            <li key={todo?._id || index}>
-                                <strong>Name : {todo.name}
+                        {data.map((todo, index) => {
+                            const readableDate = todo?.duedate
+                                ? new Date(todo.duedate).toLocaleDateString('en-US', {
+                                    weekday: 'short',
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric'
+                                })
+                                : 'No date';
 
-                                </strong>
-                                <strong id='task'>
-                                    <p>
-                                        Task:-
-                                        {todo?.task || 'Untitled'}</p>
+                            return (
+                                <li key={todo?._id || index}>
+                                    <strong>Name: {todo.name}</strong>
+                                    <strong id='task'>
+                                        <p>Task: {todo?.task || 'Untitled'}</p>
+                                        <p>Due: {readableDate}</p>
 
-                                    {todo?.duedate || 'No date'}
-
-                                    <div id='but-div'>
-                                        <button id='but'
-                                            onClick={() => handleDelete(todo._id)}
-                                            style={{
-                                                marginLeft: '10px',
-                                                padding: '5px 10px',
-                                                backgroundColor: 'red',
-                                                color: 'white',
-                                                border: 'none',
-                                                borderRadius: '33px',
-                                                cursor: 'pointer'
-                                            }}
-                                        >Delete </button>
-                                    </div>
-                                </strong>
-
-                            </li>
-                        ))}
+                                        <div id='but-div'>
+                                            <button
+                                                id='but'
+                                                onClick={() => handleDelete(todo._id)}
+                                                style={{
+                                                    marginLeft: '10px',
+                                                    padding: '5px 10px',
+                                                    backgroundColor: 'red',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '33px',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </strong>
+                                </li>
+                            );
+                        })}
                     </ul>
                 ) : (
                     <p>No todos available.</p>
                 )}
             </div>
-
-            {/* Optional: Debug raw response */}
-            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         </div>
     );
 }
