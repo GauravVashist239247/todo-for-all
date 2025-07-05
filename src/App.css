@@ -1,0 +1,68 @@
+#root {
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  background-color: #bb8588;
+
+  /* padding: 2rem; */
+  /* text-align: center; */
+}
+
+.App{
+  font-size: 30px;
+  font-family: 'Times New Roman', Times, serif;
+  
+}
+
+
+/* App.css */
+.App {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Default desktop styles */
+h1, h2 {
+  text-align: center;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .App {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+}
+/* Navbar.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.rout{
+  color: red;
+  text-decoration: none;
+}
