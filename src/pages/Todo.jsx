@@ -36,6 +36,7 @@ function Todo() {
                 } else {
                     throw new Error("Unexpected data format");
                 }
+                console.log(data)
             })
             .catch(err => {
                 console.error("Error fetching todos:", err);
@@ -45,7 +46,7 @@ function Todo() {
 
     useEffect(() => {
         fetchTodos();
-    }, []);
+    },);
 
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this task?");
