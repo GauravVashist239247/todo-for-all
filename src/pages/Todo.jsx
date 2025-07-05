@@ -46,7 +46,14 @@ function Todo() {
 
     useEffect(() => {
         fetchTodos();
-    },);
+        const interval = setInterval(() => {
+            console.log(fetchTodos());
+        }, 1000);
+
+        return () => clearInterval(interval);
+
+
+    });
 
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this task?");
