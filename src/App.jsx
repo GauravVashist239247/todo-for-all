@@ -11,6 +11,7 @@ import BackendData from './pages/BackendData';
 import RegisterForm from './pages/register';
 import Todo from './pages/Todo';
 import TodoList from './pages/Todolistappend';
+import Notes from './pages/Notes';
 
 function App() {
   // Function to get current time
@@ -58,6 +59,7 @@ function App() {
           <Route path="/backend" element={<BackendData />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/todo" element={<Todo />} />
+          <Route path="/notes" element={<Notes />} />
           <Route path="/todolist" element={<TodoList />} />
         </Routes>
       </div>

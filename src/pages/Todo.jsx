@@ -9,24 +9,11 @@ function Todo() {
         duedate: ''
     });
 
-    const [noteForm, setNoteForm] = useState({
-        title: '',
-        content: ''
-    });
-
     const [data, setData] = useState([]);
-    const [notes, setNotes] = useState([]);
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
         setFormData(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }));
-    };
-
-    const handleNoteChange = (e) => {
-        setNoteForm(prev => ({
             ...prev,
             [e.target.name]: e.target.value
         }));
@@ -58,35 +45,8 @@ function Todo() {
             });
     };
 
-    const fetchNotes = () => {
-        fetch("https://ecom-41u7.onrender.com/todo/notes")
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch notes");
-                return res.json();
-            })
-            .then(result => {
-                if (Array.isArray(result)) {
-                    setNotes(result);
-                } else if (result && Array.isArray(result.data)) {
-                    setNotes(result.data);
-                } else {
-                    throw new Error("Unexpected notes format");
-                }
-            })
-            .catch(err => {
-                console.error("Error fetching notes:", err);
-            });
-    };
     useEffect(() => {
         fetchTodos();
-        fetchNotes()
-        const interval = setInterval(() => {
-
-        }, 1000);
-
-        return () => clearInterval(interval);
-
-
     });
 
     const handleDelete = async (id) => {
@@ -113,30 +73,6 @@ function Todo() {
         }
     };
 
-    const handleDeleteNotes = async (id) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this task?");
-        if (!confirmDelete) return;
-
-        try {
-            const response = await fetch(`https://ecom-41u7.onrender.com/todo/notes/${id}`, {
-                method: 'DELETE',
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                alert('Delete failed: ' + (result.message || response.statusText));
-                return;
-            }
-
-            alert('notes deleted successfully!');
-            fetchNotes();
-        } catch (error) {
-            console.error('Delete error:', error);
-            alert('Something went wrong while deleting.');
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -146,7 +82,7 @@ function Todo() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({ ...formData, isCompleted: false }),
             });
 
             const result = await response.json();
@@ -165,28 +101,23 @@ function Todo() {
         }
     };
 
-    const handleNoteSubmit = async (e) => {
-        e.preventDefault();
+    const handleToggleComplete = async (todo) => {
         try {
-            const res = await fetch("https://ecom-41u7.onrender.com/todo/note", {
-                method: "POST",
+            const response = await fetch(`https://ecom-41u7.onrender.com/todo/updatetodo/${todo._id}`, {
+                method: 'PUT',
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(noteForm)
+                body: JSON.stringify({ ...todo, isCompleted: !todo.isCompleted }),
             });
 
-            const result = await res.json();
-            if (!res.ok) {
-                alert("Failed to add note: " + (result.message || res.statusText));
-                return;
+            if (!response.ok) {
+                throw new Error("Failed to update completion status");
             }
 
-            alert("Note added successfully!");
-            setNoteForm({ title: '', content: '' });
-            fetchNotes();
+            fetchTodos();
         } catch (err) {
-            console.error("Note upload error:", err);
+            console.error("Toggle complete error:", err);
         }
     };
 
@@ -232,7 +163,7 @@ function Todo() {
                 <p>Total tasks: {Array.isArray(data) ? data.length : 0}</p>
 
                 {Array.isArray(data) && data.length > 0 ? (
-                    <ul>
+                    <ul style={{ listStyleType: 'none', padding: 0 }}>
                         {data.map((todo, index) => {
                             const readableDate = todo?.duedate
                                 ? new Date(todo.duedate).toLocaleDateString('en-US', {
@@ -244,31 +175,49 @@ function Todo() {
                                 : 'No date';
 
                             return (
-                                <li key={todo?._id || index} style={{ marginBottom: '15px' }}>
-                                    <strong>Name: {todo.name}</strong>
-                                    <div>
-                                        <p>Task: {todo?.task || 'Untitled'}</p>
-                                        <p>Due: {readableDate}</p>
-                                        <div className='but-div'>
-                                            <button
-                                                id='but'
-                                                onClick={() => handleDelete(todo._id)}
-                                                style={{
-                                                    marginLeft: '10px',
-                                                    padding: '5px 10px',
-                                                    backgroundColor: '#ff758f',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '33px',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                Delete
-                                                <img id='icon' src={deleteIcon}
-                                                    alt="" />
-                                            </button>
-                                        </div>
+                                <li
+                                    key={todo?._id || index}
+                                    style={{
+                                        marginBottom: '15px',
+                                        padding: '10px',
+                                        borderRadius: '8px',
+                                        backgroundColor: todo?.isCompleted ? '#d3ffd3' : '#fff',
+                                        opacity: todo?.isCompleted ? 0.6 : 1,
+                                        transition: 'all 0.3s ease',
+                                        border: '1px solid #ddd'
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <strong>{todo.name}</strong>
+                                        <input
+                                            id='checkbox'
+                                            type="checkbox"
+                                            checked={todo?.isCompleted}
+                                            onChange={() => handleToggleComplete(todo)}
+                                            style={{ marginRight: '10px' }}
+                                        />
                                     </div>
+                                    <p>Task: {todo?.task || 'Untitled'}</p>
+                                    <p>Due: {readableDate}</p>
+                                    <div className='but-div'>
+                                        <button
+                                            id='but'
+                                            onClick={() => handleDelete(todo._id)}
+                                            style={{
+                                                marginLeft: '10px',
+                                                padding: '5px 10px',
+                                                backgroundColor: '#ff758f',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '33px',
+                                                cursor: 'pointer'
+                                            }}
+                                        >
+                                            Delete
+                                            <img id='icon' src={deleteIcon} alt="" />
+                                        </button>
+                                    </div>
+                                    <hr style={{ margin: '40px 0' }} />
                                 </li>
                             );
                         })}
@@ -278,67 +227,6 @@ function Todo() {
                 )}
             </div>
 
-            <hr style={{ margin: '40px 0' }} />
-
-            <div>
-                <h2>Notes</h2>
-
-                <form onSubmit={handleNoteSubmit} style={{ marginBottom: '20px' }}>
-                    <input
-                        type="text"
-                        name="title"
-                        placeholder="Note Title"
-                        value={noteForm.title}
-                        onChange={handleNoteChange}
-                        required
-                        style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
-                    />
-                    <textarea
-                        name="content"
-                        placeholder="Note Content"
-                        value={noteForm.content}
-                        onChange={handleNoteChange}
-                        required
-                        rows="4"
-                        style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
-                    />
-                    <button type="submit" style={{ padding: '10px', width: '100%' }}>
-                        Add Note
-                    </button>
-                </form>
-
-                {notes.length > 0 ? (
-                    <ul>
-                        {notes.map((note, index) => (
-                            <li key={note?._id || index} style={{ marginBottom: '20px' }}>
-                                <h4>{note.title}</h4>
-                                <p>{note.content}</p>
-                                <div className='but-div'>
-                                    <button
-                                        id='but'
-                                        onClick={() => handleDeleteNotes(note._id)}
-                                        style={{
-                                            marginLeft: '10px',
-                                            padding: '5px 10px',
-                                            backgroundColor: '#ff758f',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '33px',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        Delete
-                                        <img id='icon' src={deleteIcon}
-                                            alt="" />
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No notes available.</p>
-                )}
-            </div>
         </div>
     );
 }
