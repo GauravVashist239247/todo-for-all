@@ -46,8 +46,8 @@ function App() {
       <Navbar />
 
       <div className="App" style={{ minHeight: '81.1vh' }}>
-        <h1 align="center">Current Time</h1>
-        <h2 align="center">{time}</h2>
+        {/* <h1 align="center">Current Time</h1>
+        <h2 align="center">{time}</h2> */}
 
         <Routes>
           <Route path="/" element={<Home />} />

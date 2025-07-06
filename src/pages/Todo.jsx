@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './Todo.css';
 import deleteIcon from '../assets/delete.png';
 
-
 function Todo() {
     const [formData, setFormData] = useState({
         name: '',
@@ -10,11 +9,24 @@ function Todo() {
         duedate: ''
     });
 
+    const [noteForm, setNoteForm] = useState({
+        title: '',
+        content: ''
+    });
+
     const [data, setData] = useState([]);
+    const [notes, setNotes] = useState([]);
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
         setFormData(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    };
+
+    const handleNoteChange = (e) => {
+        setNoteForm(prev => ({
             ...prev,
             [e.target.name]: e.target.value
         }));
@@ -46,8 +58,28 @@ function Todo() {
             });
     };
 
+    const fetchNotes = () => {
+        fetch("https://ecom-41u7.onrender.com/todo/notes")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch notes");
+                return res.json();
+            })
+            .then(result => {
+                if (Array.isArray(result)) {
+                    setNotes(result);
+                } else if (result && Array.isArray(result.data)) {
+                    setNotes(result.data);
+                } else {
+                    throw new Error("Unexpected notes format");
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching notes:", err);
+            });
+    };
     useEffect(() => {
         fetchTodos();
+        fetchNotes()
         const interval = setInterval(() => {
 
         }, 1000);
@@ -109,8 +141,33 @@ function Todo() {
         }
     };
 
+    const handleNoteSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch("https://ecom-41u7.onrender.com/todo/note", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(noteForm)
+            });
+
+            const result = await res.json();
+            if (!res.ok) {
+                alert("Failed to add note: " + (result.message || res.statusText));
+                return;
+            }
+
+            alert("Note added successfully!");
+            setNoteForm({ title: '', content: '' });
+            fetchNotes();
+        } catch (err) {
+            console.error("Note upload error:", err);
+        }
+    };
+
     return (
-        <div style={{ padding: '20px', maxWidth: '500px', margin: 'auto' }}>
+        <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
             <h1>Todo App</h1>
 
             <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
@@ -163,12 +220,11 @@ function Todo() {
                                 : 'No date';
 
                             return (
-                                <li key={todo?._id || index}>
+                                <li key={todo?._id || index} style={{ marginBottom: '15px' }}>
                                     <strong>Name: {todo.name}</strong>
-                                    <strong id='task'>
+                                    <div>
                                         <p>Task: {todo?.task || 'Untitled'}</p>
                                         <p>Due: {readableDate}</p>
-
                                         <div id='but-div'>
                                             <button
                                                 id='but'
@@ -188,7 +244,7 @@ function Todo() {
                                                     alt="" />
                                             </button>
                                         </div>
-                                    </strong>
+                                    </div>
                                 </li>
                             );
                         })}
@@ -197,7 +253,50 @@ function Todo() {
                     <p>No todos available.</p>
                 )}
             </div>
-        </div >
+
+            <hr style={{ margin: '40px 0' }} />
+
+            <div>
+                <h2>Notes</h2>
+
+                <form onSubmit={handleNoteSubmit} style={{ marginBottom: '20px' }}>
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Note Title"
+                        value={noteForm.title}
+                        onChange={handleNoteChange}
+                        required
+                        style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                    />
+                    <textarea
+                        name="content"
+                        placeholder="Note Content"
+                        value={noteForm.content}
+                        onChange={handleNoteChange}
+                        required
+                        rows="4"
+                        style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                    />
+                    <button type="submit" style={{ padding: '10px', width: '100%' }}>
+                        Add Note
+                    </button>
+                </form>
+
+                {notes.length > 0 ? (
+                    <ul>
+                        {notes.map((note, index) => (
+                            <li key={note?._id || index} style={{ marginBottom: '20px' }}>
+                                <h4>{note.title}</h4>
+                                <p>{note.content}</p>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No notes available.</p>
+                )}
+            </div>
+        </div>
     );
 }
 
