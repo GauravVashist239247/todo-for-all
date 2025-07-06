@@ -15,7 +15,7 @@
     height: 50px;
 }
 
-#but-div{
+.but-div{
     display: flex;
     align-items: center ;
     justify-content: center;

@@ -113,6 +113,30 @@ function Todo() {
         }
     };
 
+    const handleDeleteNotes = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`https://ecom-41u7.onrender.com/todo/notes/${id}`, {
+                method: 'DELETE',
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert('Delete failed: ' + (result.message || response.statusText));
+                return;
+            }
+
+            alert('notes deleted successfully!');
+            fetchNotes();
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Something went wrong while deleting.');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -225,7 +249,7 @@ function Todo() {
                                     <div>
                                         <p>Task: {todo?.task || 'Untitled'}</p>
                                         <p>Due: {readableDate}</p>
-                                        <div id='but-div'>
+                                        <div className='but-div'>
                                             <button
                                                 id='but'
                                                 onClick={() => handleDelete(todo._id)}
@@ -289,6 +313,25 @@ function Todo() {
                             <li key={note?._id || index} style={{ marginBottom: '20px' }}>
                                 <h4>{note.title}</h4>
                                 <p>{note.content}</p>
+                                <div className='but-div'>
+                                    <button
+                                        id='but'
+                                        onClick={() => handleDeleteNotes(note._id)}
+                                        style={{
+                                            marginLeft: '10px',
+                                            padding: '5px 10px',
+                                            backgroundColor: '#ff758f',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '33px',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Delete
+                                        <img id='icon' src={deleteIcon}
+                                            alt="" />
+                                    </button>
+                                </div>
                             </li>
                         ))}
                     </ul>
