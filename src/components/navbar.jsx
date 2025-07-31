@@ -33,13 +33,13 @@ const Navbar = () => {
                     <NavLink to="/" className="nav-link">Home</NavLink>
                     <NavLink to="/about" className="nav-link">About</NavLink>
                     <NavLink to="/github" className="nav-link">Github</NavLink>
-                    <NavLink to="/register" className="nav-link">Register</NavLink>
                     <NavLink to="/backend" className="nav-link">Backend</NavLink>
                     <NavLink to="/todo" className="nav-link">Todo</NavLink>
                     <NavLink to="/notes" className="nav-link">Notes</NavLink>
                     <NavLink to="/todolist" className="nav-link">Todolist</NavLink>
                 </div>
 
+                <NavLink to="/register" className="nav-link">Register</NavLink>
                 <div id='log-but'>
                     <button onClick={handleloginclick}>Login</button>
                 </div>
