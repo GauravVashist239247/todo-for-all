@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { loginUser } from '../services/authService';
 
 function TodoLogin() {
-    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [formData, setFormData] = useState({ email: '', name: '', password: '' });
     const [message, setMessage] = useState('');
 
     const handleChange = (e) => {
@@ -32,7 +32,9 @@ function TodoLogin() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                /><br /><br />
+                />
+
+                <br /><br />
                 <input
                     name="password"
                     type="password"

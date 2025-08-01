@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { registerUser } from '../services/authService';
 
 function TodoRegister() {
-    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [formData, setFormData] = useState({ email: '', name: '', password: '' });
     const [message, setMessage] = useState('');
 
     const handleChange = (e) => {
@@ -30,7 +30,16 @@ function TodoRegister() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                /><br /><br />
+                />
+                <input
+                    name="name"
+                    type="name"
+                    placeholder="Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                />
+                <br /><br />
                 <input
                     name="password"
                     type="password"

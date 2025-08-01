@@ -15,6 +15,7 @@ const Home = () => {
 
                 if (res.ok) {
                     setUser(data.user); // update state with user data
+                    console.log(data)
                 } else {
                     console.log('User not logged in');
                 }
@@ -29,15 +30,17 @@ const Home = () => {
     return (
         <div>
             <h1>Welcome to the Home Page</h1>
+
             {user ? (
                 <div>
                     <h2>User Info:</h2>
                     <p><strong>ID:</strong> {user.id}</p>
+                    <p><strong>NAME:</strong> {user.name}</p>
                     <p><strong>Email:</strong> {user.email}</p>
                 </div>
-            ) : (
-                <p>Loading user info or not logged in.</p>
-            )}
+            )
+                : (<p>Loading user info or not logged in.</p>)
+            }
         </div>
     );
 };

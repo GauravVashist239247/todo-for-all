@@ -1,12 +1,12 @@
 const API_URL = 'https://ecom-41u7.onrender.com/todo';
 
-export const registerUser = async ({ email, password }) => {
+export const registerUser = async ({ email, name, password }) => {
     try {
         const res = await fetch(`${API_URL}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ email, name, password }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
@@ -16,13 +16,13 @@ export const registerUser = async ({ email, password }) => {
     }
 };
 
-export const loginUser = async ({ email, password }) => {
+export const loginUser = async ({ email, name, password }) => {
     try {
         const res = await fetch(`https://ecom-41u7.onrender.com/todo/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ email, name, password }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
