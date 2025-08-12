@@ -6,7 +6,7 @@ const Home = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const res = await fetch('http://localhost:9000/me', {
+                const res = await fetch('https://ecom-41u7.onrender.com/me', {
                     method: 'GET',
                     credentials: 'include',
                 });
