@@ -45,6 +45,38 @@ function Todo() {
             });
     };
 
+
+
+    //useEffect code for gmail of user
+    const [user, setUser] = useState(null); // state to store user info
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await fetch('https://ecom-41u7.onrender.com/me', {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    setUser(data.user); // update state with user data
+                    console.log(data)
+                } else {
+                    console.log('User not logged in');
+                }
+            } catch (error) {
+                console.error('Error fetching user:', error);
+            }
+        };
+
+        fetchUser();
+    }, []);
+
+
+
+
     useEffect(() => {
         fetchTodos();
     });
@@ -56,6 +88,7 @@ function Todo() {
         try {
             const response = await fetch(`https://ecom-41u7.onrender.com/todo/deletetodo/${id}`, {
                 method: 'DELETE',
+                credentials: 'include',
             });
 
             const result = await response.json();
@@ -82,7 +115,7 @@ function Todo() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ...formData, isCompleted: false }),
+                body: JSON.stringify({ ...formData, isCompleted: false, createdby: user.email }),
             });
 
             const result = await response.json();
@@ -105,16 +138,19 @@ function Todo() {
         try {
             const response = await fetch(`https://ecom-41u7.onrender.com/todo/updatetodo/${todo._id}`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ...todo, isCompleted: !todo.isCompleted }),
+                body: JSON.stringify({ ...todo, isCompleted: !todo.isCompleted, createdby: user.email }),
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to update completion status");
-            }
+            const result = await response.json();
 
+            if (!response.ok) {
+                alert('updation failed: ' + (result.message || response.statusText));
+                return;
+            }
             fetchTodos();
         } catch (err) {
             console.error("Toggle complete error:", err);
@@ -188,7 +224,9 @@ function Todo() {
                                     }}
                                 >
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <strong>{todo.name}</strong>
+
+                                        <strong>Name:{todo.name}</strong>
+
                                         <input
                                             id='checkbox'
                                             type="checkbox"
@@ -197,7 +235,8 @@ function Todo() {
                                             style={{ marginRight: '10px' }}
                                         />
                                     </div>
-                                    <p>Task: {todo?.task || 'Untitled'}</p>
+                                    <strong>email:{todo.createdby}</strong>
+                                    <p style={{ backgroundColor: "red" }}>Task: {todo?.task || 'Untitled'}</p>
                                     <p>Due: {readableDate}</p>
                                     <div className='but-div'>
                                         <button

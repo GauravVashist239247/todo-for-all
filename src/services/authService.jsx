@@ -18,7 +18,7 @@ export const registerUser = async ({ email, name, password }) => {
 
 export const loginUser = async ({ email, name, password }) => {
     try {
-        const res = await fetch(`https://ecom-41u7.onrender.com/todo/login`, {
+        const res = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
