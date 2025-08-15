@@ -44,6 +44,11 @@ const Navbar = () => {
                     <button onClick={handleloginclick}>Login</button>
                 </div>
 
+                <div className='nav-links'>
+                    <NavLink to="/logout" className='nav-link'>Logout</NavLink>
+
+                </div>
+
                 <span
                     id='darkmodelogo'
                     onClick={toggleDarkMode}

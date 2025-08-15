@@ -12,6 +12,7 @@ import RegisterForm from './pages/register';
 import Todo from './pages/Todo';
 import TodoList from './pages/Todolistappend';
 import Notes from './pages/Notes';
+import Logout from './pages/Logout';
 // import TodoLogin from './components/login';
 // import TodoRegister from './components/register';
 
@@ -63,6 +64,7 @@ function App() {
           <Route path="/todo" element={<Todo />} />
           <Route path="/notes" element={<Notes />} />
           <Route path="/todolist" element={<TodoList />} />
+          <Route path="/logout" element={<Logout />} />
           {/* <Route path="/todologin" element={<TodoLogin />} /> */}
           {/* <Route path="/todoregister" element={<TodoRegister />} /> */}
 
